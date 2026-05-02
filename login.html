@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+
+<style>
+body {
+  background:#0a0f1c;
+  color:#fff;
+  text-align:center;
+  font-family:Arial;
+  padding-top:50px;
+}
+
+input {
+  padding:10px;
+  margin:10px;
+  border-radius:8px;
+  border:none;
+}
+
+button {
+  padding:10px 20px;
+  background:#00ff88;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>🔐 Área VIP</h2>
+
+<input id="email" placeholder="Email"><br>
+<input id="senha" type="password" placeholder="Senha"><br>
+
+<button onclick="login()">Entrar</button>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCpdlH5oUIcTUqb3o4Sqak1LDAxl31NxuA",
+    authDomain: "aviator-pro-4d4ef.firebaseapp.com",
+    projectId: "aviator-pro-4d4ef",
+    storageBucket: "aviator-pro-4d4ef.firebasestorage.app",
+    messagingSenderId: "276229282714",
+    appId: "1:276229282714:web:2c1abed31becaa000a7823",
+    measurementId: "G-WW9CT4LWCH"
+  };
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+
+window.login = function(){
+
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+
+  signInWithEmailAndPassword(auth, email, senha)
+  .then(() => {
+    alert("Login realizado!");
+    window.location.href = "dashboard.html";
+  })
+  .catch((error) => {
+    alert("Erro no login: " + error.message);
+  });
+
+}
+
+</script>
+
+</body>
+</html>
