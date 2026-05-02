@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel PRO</title>
+<title>Aviator PRO</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -11,20 +11,14 @@ body {
     margin:0;
     background: radial-gradient(circle at top, #0a0f1c, #05070d);
     color:#fff;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Arial;
 }
 
 header {
     display:flex;
     justify-content:space-between;
-    padding:15px 25px;
+    padding:15px 20px;
     background:#0f1629;
-    border-bottom:1px solid rgba(255,255,255,0.1);
-}
-
-.logo {
-    font-weight:bold;
-    font-size:18px;
 }
 
 .live {
@@ -33,29 +27,31 @@ header {
 }
 
 .container {
-    padding:20px;
+    padding:15px;
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:20px;
+    gap:15px;
 }
 
 .card {
     background:#121a33;
-    padding:20px;
-    border-radius:14px;
-    box-shadow:0 0 20px rgba(0,255,150,0.08);
-}
-
-input, button {
-    padding:10px;
-    border:none;
-    border-radius:8px;
+    padding:15px;
+    border-radius:12px;
 }
 
 button {
+    padding:10px;
     background:#00ff88;
-    font-weight:bold;
+    border:none;
+    border-radius:8px;
     cursor:pointer;
+}
+
+.cta {
+    width:100%;
+    background:#ffcc00;
+    font-weight:bold;
+    margin-top:10px;
 }
 
 .alerta {
@@ -63,36 +59,28 @@ button {
     font-weight:bold;
 }
 
-.vip {
-    background: linear-gradient(90deg, gold, orange);
-    color:#000;
-    padding:5px 10px;
-    border-radius:6px;
-    font-weight:bold;
-}
 </style>
-
 </head>
 
 <body>
 
 <header>
-<div class="logo">🚀 AVIATOR PRO</div>
+<div>🚀 AVIATOR PRO</div>
 <div class="live">● AO VIVO</div>
-<div class="vip">VIP</div>
+<div id="vagas">23 vagas</div>
 </header>
-<p style="color:orange;">⚡ Apenas 23 vagas restantes hoje</p>
+
 <div class="container">
 
 <div class="card">
 <h3>Inserir Resultado</h3>
 <input id="entrada" placeholder="Ex: 1.45">
-<button onclick="add()">Adicionar</button>
+<button onclick="addManual()">Adicionar</button>
 </div>
 
 <div class="card">
 <h3>Status</h3>
-<p id="alerta" class="alerta">Aguardando dados...</p>
+<p id="alerta">Iniciando sistema...</p>
 </div>
 
 <div class="card">
@@ -102,31 +90,54 @@ button {
 
 <div class="card">
 <h3>Estratégia</h3>
-<p id="estrategia">Carregando...</p>
+<p id="estrategia">Aguardando análise...</p>
 </div>
+
+<div class="card">
+<h3>Histórico</h3>
+<p id="historico"></p>
+</div>
+
+<div class="card">
 <p>+3.421 usuários ativos</p>
-</div>
-    <a href="https://wa.me/5561991057795">
+
+<a href="https://wa.me/SEUNUMERO">
 <button>Suporte VIP</button>
 </a>
+
+<button class="cta">💰 LIBERAR SINAIS PREMIUM</button>
+</div>
+
+</div>
+
+<audio id="som" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 
 <script>
 let dados = [];
 
-const ctx = document.getElementById('grafico');
+const ctx = document.getElementById('grafico').getContext('2d');
+
 const chart = new Chart(ctx, {
     type: 'line',
-    data: { labels: [], datasets: [{ data: [], tension:0.4 }] }
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Multiplicadores',
+            data: [],
+            borderWidth: 2,
+            tension: 0.4
+        }]
+    }
 });
 
-function add(){
+function addManual(){
     let v = parseFloat(document.getElementById('entrada').value);
     if(!v) return;
+    inserir(v);
+}
 
-    dados.push(v);
-
-    chart.data.labels.push('');
-    chart.data.datasets[0].data.push(v);
+function inserir(valor){
+    dados.push(valor);
 
     if(dados.length > 30){
         dados.shift();
@@ -134,8 +145,17 @@ function add(){
         chart.data.datasets[0].data.shift();
     }
 
+    chart.data.labels.push('');
+    chart.data.datasets[0].data.push(valor);
+
     chart.update();
+
+    atualizarHistorico();
     analisar();
+}
+
+function atualizarHistorico(){
+    document.getElementById("historico").innerText = dados.join(", ");
 }
 
 function analisar(){
@@ -145,21 +165,44 @@ function analisar(){
     let baixos = ultimos.filter(x => x < 1.5).length;
     let altos = ultimos.filter(x => x > 2).length;
 
+    let alerta = document.getElementById("alerta");
+    let estrategia = document.getElementById("estrategia");
+
     if(baixos >= 4){
-        document.getElementById('alerta').innerText = "⚠️ RISCO ALTO";
-        document.getElementById('estrategia').innerText = "Evitar entrada. Muitas quedas seguidas.";
+        alerta.innerHTML = "⚠️ RISCO ALTO";
+        estrategia.innerHTML = "Evite entradas. Sequência ruim detectada.";
     }
     else if(altos >= 3){
-        document.getElementById('alerta').innerText = "🔥 MOMENTO INTERESSANTE";
-        document.getElementById('estrategia').innerText = "Possível janela de recuperação.";
+        alerta.innerHTML = "🔥 POSSÍVEL ENTRADA";
+        estrategia.innerHTML = "Momento interessante. Operar com cautela.";
+        document.getElementById("som").play();
     }
     else{
-        document.getElementById('alerta').innerText = "✔️ ESTÁVEL";
-        document.getElementById('estrategia').innerText = "Operar com cautela.";
+        alerta.innerHTML = "✔️ ESTÁVEL";
+        estrategia.innerHTML = "Mercado neutro.";
     }
-
 }
+
+// SIMULAÇÃO AUTOMÁTICA (efeito ao vivo)
+setInterval(() => {
+
+    let random = (Math.random() * 3 + 1).toFixed(2);
+    inserir(parseFloat(random));
+
+}, 3000);
+
+
+// CONTADOR DE VAGAS
+let vagas = 23;
+
+setInterval(()=>{
+    if(vagas > 3){
+        vagas--;
+    }
+    document.getElementById("vagas").innerText = vagas + " vagas";
+}, 10000);
+
 </script>
 
 </body>
-</html>
+    </html>
