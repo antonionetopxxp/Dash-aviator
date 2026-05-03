@@ -4,190 +4,56 @@
 <meta charset="UTF-8">
 <title>Aviator PRO</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
 body {
-    margin:0;
-    background:#0a0f1c;
-    color:#fff;
-    font-family:Arial;
+  background:#0a0f1c;
+  color:#fff;
+  font-family:Arial;
+  text-align:center;
 }
 
-header {
-    display:flex;
-    justify-content:space-between;
-    padding:15px;
-    background:#11182e;
+.container { padding:20px; }
+
+button {
+  padding:15px;
+  background:#ffcc00;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+  width:80%;
+  margin:10px;
 }
 
-.live {
-    color:#00ff88;
-    animation: blink 1s infinite;
+.prova {
+  color:#00ff88;
+  margin-top:10px;
 }
-
-.container {
-    padding:15px;
-}
-
-.card {
-    background:#121a33;
-    padding:15px;
-    margin-bottom:10px;
-    border-radius:10px;
-}
-
-.badge {
-    padding:5px 10px;
-    border-radius:6px;
-    font-weight:bold;
-}
-
-.blue { color:#00aaff; }
-.purple { color:#bb66ff; }
-.pink { color:#ff4da6; }
-
-.cta {
-    width:100%;
-    padding:15px;
-    background:#ffcc00;
-    border:none;
-    border-radius:10px;
-    font-weight:bold;
-}
-
 </style>
 </head>
 
 <body>
 
-<header>
-<div>🚀 AVIATOR PRO</div>
-<div class="live">● AO VIVO</div>
-<div>VIP</div>
-</header>
-
 <div class="container">
 
-<div class="card">
-<h3>Multiplicador Atual</h3>
-<h1 id="atual">1.00x</h1>
-</div>
+<h1>🚀 AVIATOR PRO</h1>
+<p>🔥 Sistema com alertas em tempo real</p>
 
-<div class="card">
-<h3>Gráfico</h3>
-<canvas id="grafico"></canvas>
-</div>
+<h2>R$19,90</h2>
 
-<div class="card">
-<h3>Status</h3>
-<p id="status">Analisando...</p>
-</div>
+<button onclick="comprar()">LIBERAR ACESSO AGORA</button>
 
-<div class="card">
-<h3>Histórico</h3>
-<p id="historico"></p>
 <a href="login.html">
-<button>Entrar na área VIP</button>
+<button>Já comprei / Entrar</button>
 </a>
-</div>
 
-<div class="card">
-<button class="cta">💰 LIBERAR SINAIS PREMIUM</button>
-</div>
+<p class="prova">+3.421 usuários ativos</p>
 
 </div>
 
 <script>
-
-let dados = [];
-let atual = 1.00;
-
-const ctx = document.getElementById('grafico');
-
-const chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: [],
-        datasets: [{
-            label: 'Multiplicador',
-            data: [],
-            borderWidth: 2,
-            tension: 0.4
-        }]
-    },
-    options: {
-        animation: false
-    }
-});
-
-function cor(valor){
-    if(valor < 2) return "blue";
-    if(valor < 10) return "purple";
-    return "pink";
+function comprar(){
+  window.location.href = "SEU_LINK_DA_KIWIFY";
 }
-
-function atualizarHistorico(){
-    document.getElementById("historico").innerHTML =
-        dados.slice(-10).map(v => `<span class="${cor(v)}">${v}x</span>`).join(" ");
-}
-
-function novaRodada(){
-
-    atual = 1.00;
-
-    let intervalo = setInterval(() => {
-
-        atual += Math.random() * 0.5;
-
-        document.getElementById("atual").innerText = atual.toFixed(2) + "x";
-
-        chart.data.labels.push('');
-        chart.data.datasets[0].data.push(atual);
-
-        if(chart.data.labels.length > 20){
-            chart.data.labels.shift();
-            chart.data.datasets[0].data.shift();
-        }
-
-        chart.update();
-
-        // chance de crash
-        if(Math.random() < 0.05){
-
-            clearInterval(intervalo);
-
-            let final = atual.toFixed(2);
-            dados.push(parseFloat(final));
-
-            analisar(final);
-            atualizarHistorico();
-
-            setTimeout(novaRodada, 2000);
-        }
-
-    }, 200);
-
-}
-
-function analisar(valor){
-
-    let status = document.getElementById("status");
-
-    if(valor < 1.5){
-        status.innerHTML = "⚠️ Sequência baixa detectada";
-    }
-    else if(valor > 5){
-        status.innerHTML = "🔥 Alta recente detectada";
-    }
-    else{
-        status.innerHTML = "✔️ Mercado neutro";
-    }
-
-}
-
-novaRodada();
-
 </script>
 
 </body>
